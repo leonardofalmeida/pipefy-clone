@@ -21,12 +21,12 @@ export default function Card({ data, index, listIndex }) {
     accept: 'CARD',
     hover(item, monitor) {
       const draggedListIndex = item.listIndex;
-      //const targetListIndex = item.listIndex;
+      const targetListIndex = listIndex;
 
       const draggedIndex = item.index; // quem está sendo arrastado
       const targetIndex = index; // alvo do drop
 
-      if (draggedIndex === targetIndex) {
+      if (draggedIndex === targetIndex && targetListIndex === draggedListIndex) {
         return;
       }
 
@@ -53,9 +53,10 @@ export default function Card({ data, index, listIndex }) {
         return;
       }
 
-      move(draggedListIndex, draggedIndex, targetIndex);
+      move(draggedListIndex, targetListIndex, draggedIndex, targetIndex);
 
       item.index = targetIndex;
+      item.listIndex = targetListIndex;
 
     }
   })

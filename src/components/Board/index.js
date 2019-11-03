@@ -13,7 +13,7 @@ const data = loadLists();
 export default function Board() {
   const [lists, setLists] = useState(data);
 
-  function move(fromList, from, to) {
+  function move(fromList, toList, from, to) {
     // Com o produce não mudamos nosso estado, então ele permanece imutável
     // O draft é uma cópia de lists, sempre o draft sofre uma alteração
     // ele computa automaticamente no lists
@@ -22,7 +22,7 @@ export default function Board() {
 
       //Primeiro remove o item da lista e depois o recoloca no novo lugar
       draft[fromList].cards.splice(from, 1);
-      draft[fromList].cards.splice(to, 0, dragged);
+      draft[toList].cards.splice(to, 0, dragged);
     }))
   }
 
