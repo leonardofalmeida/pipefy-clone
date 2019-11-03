@@ -1,13 +1,17 @@
-import React, { useRef } from 'react';
+import React, { useRef, useContext } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
+
+import BoardContext from '../Board/context';
 
 import { Container, Label } from './styles';
 
-export default function Card({ data, index }) {
+export default function Card({ data, index, listIndex }) {
   const ref = useRef();
 
+  const { move } = useContext(BoardContext);
+
   const [{ isDragging }, dragRef] = useDrag({
-    item: { type: 'CARD', index }, // id: data.id, content: data.content 
+    item: { type: 'CARD', index, listIndex }, // id: data.id, content: data.content 
     collect: monitor => ({
       isDragging: monitor.isDragging(),
     })
@@ -16,6 +20,9 @@ export default function Card({ data, index }) {
   const [, dropRef] = useDrop({
     accept: 'CARD',
     hover(item, monitor) {
+      const draggedListIndex = item.listIndex;
+      //const targetListIndex = item.listIndex;
+
       const draggedIndex = item.index; // quem está sendo arrastado
       const targetIndex = index; // alvo do drop
 
@@ -36,6 +43,8 @@ export default function Card({ data, index }) {
       // menos a distância do card alvo em relação ao topo
       const draggedTop = draggedOffset.y - targetSize.top;
 
+      // Funções para evitar calculos desnecessários, por exemplo
+      // se um card é o primeiro e nao passou da metade do segundo
       if (draggedIndex < targetIndex && draggedTop < targetCenter) {
         return;
       }
@@ -43,6 +52,10 @@ export default function Card({ data, index }) {
       if (draggedIndex > targetIndex && draggedTop > targetCenter) {
         return;
       }
+
+      move(draggedListIndex, draggedIndex, targetIndex);
+
+      item.index = targetIndex;
 
     }
   })
